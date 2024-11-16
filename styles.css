@@ -51,9 +51,11 @@ div#game{
     line-height: 35px;
     height: 105px;
     overflow: hidden;
+    position: relative;
 }
 #words{
-    filter: blur(5px);
+    filter: blur(3px);
+    color: var(--textSecondary);
 }
 #game:focus #words{
     filter: blur(0);
@@ -62,7 +64,7 @@ div#game{
     position: absolute;
     inset: 0;
     text-align: center;
-    padding-top: px;
+    padding-top: 35px;
 }
 #game:focus #focus-error{
     display: none;
@@ -71,4 +73,34 @@ div.word{
     display: inline-block;
     font-family: 'Roboto Mono', monospace;
     margin: 0 5px;
+}
+.letter.correct{
+    color: #fff;
+}
+.letter.incorrect{
+    color: #f55;
+}
+@keyframes blink{
+    0%{
+        opacity: 1;
+    }
+    50%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}
+#cursor{
+    display: none;
+    width: 2px;
+    height: 1.6rem;
+    background: var(--primaryColor);
+    position: fixed;
+    top: 200px;
+    left: 230px; /*don't change this 230px to 16px; it will not work */
+    animation: blink .4s infinite; /* I changed the blink speed to 4s instead of 3s */
+}
+#game:focus #cursor{
+    display: block;
 }
