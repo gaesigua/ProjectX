@@ -11,7 +11,7 @@ function removeclass(el,name){
 
 function randomWord() {                                                   // fourth, let's create a function 
     const randomIndex = Math.ceil(Math.random() * wordsCount);            //fifth, that function should return a random word let's get a random index
-    return words[randomIndex];                                            //sixth, here we are saying 
+    return words[randomIndex - 1];                                            //sixth, here we are saying 
   }
 function formatWord(word){                                                //here we are splitting the words into letters first, and second we join those split letters together by using </span><span>; and because the first letter has a closing tag, we have to open it above, and because the last letter has an opening tag, we must close it in the line below; and I put the spans on each letter, because I will use them to put colors on each letter
 
@@ -31,10 +31,31 @@ function newGame() {                                                      //seco
 }
 document.getElementById('game').addEventListener('keyup', ev => {
   const key = ev.key;
+  const currentWord = document.querySelector('.word.current');
   const currentLetter = document.querySelector('.letter.current');
   const expected = currentLetter.innerHTML;
+  const isLetter = key.length === 1 && key !== ' ';
+  const isSpace = key === ' ';
 
-  console.log({key,expected})
+  console.log({key,expected});
+
+  if(isLetter){
+    if(currentLetter){
+      addClass(currentLetter, key === expected ? 'correct' : 'incorrect');
+      removeclass(currentLetter, 'current');
+      addClass(currentLetter.nextSibling, 'current');
+    }
+  }
+  if(isSpace){
+    if(expected !== ' '){
+      const lettersToInvalidate = [...document.querySelectorAll ('word.current .letter:not(.correct)')];
+      lettersToInvalidate.forEach(letter => {
+        addClass(letter, 'incorrect');
+      });
+    }
+    removeclass(currentWord, 'current');
+    addClass(currentWord.nextSibling, 'current');
+  }
 })
   
     newGame();
