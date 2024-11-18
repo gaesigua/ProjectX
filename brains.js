@@ -4,7 +4,7 @@ const wordsCount = words.length;
 function addClass(el,name){
   el.className += ' '+name;
 }
-function removeclass(el,name){
+function removeClass(el,name){
   el.className = el.className.replace(name,'');
 }
 
@@ -33,7 +33,7 @@ document.getElementById('game').addEventListener('keyup', ev => {
   const key = ev.key;
   const currentWord = document.querySelector('.word.current');
   const currentLetter = document.querySelector('.letter.current');
-  const expected = currentLetter.innerHTML;
+  const expected = currentLetter.innerHTML || ' ';
   const isLetter = key.length === 1 && key !== ' ';
   const isSpace = key === ' ';
 
@@ -42,10 +42,19 @@ document.getElementById('game').addEventListener('keyup', ev => {
   if(isLetter){
     if(currentLetter){
       addClass(currentLetter, key === expected ? 'correct' : 'incorrect');
-      removeclass(currentLetter, 'current');
-      addClass(currentLetter.nextSibling, 'current');
+      removeClass(currentLetter, 'current');
+      if(currentLetter.nextSibling){
+        addClass(currentLetter.nextSibling, 'current');
+      }      
+    } else {
+      const incorrectLetter = document.createElement('span');
+      incorrectLetter.innerHTML = key;
+      incorrectLetter.className = 'letter incorrect extra';
+      currentWord.appendChild(incorrectLetter);
     }
   }
+
+
   if(isSpace){
     if(expected !== ' '){
       const lettersToInvalidate = [...document.querySelectorAll ('word.current .letter:not(.correct)')];
@@ -53,8 +62,20 @@ document.getElementById('game').addEventListener('keyup', ev => {
         addClass(letter, 'incorrect');
       });
     }
-    removeclass(currentWord, 'current');
+    removeClass(currentWord, 'current');
     addClass(currentWord.nextSibling, 'current');
+    if(currentLetter){
+      removeClass(currentLetter, 'current');
+    }
+    addClass(currentWord.nextSibling.firstChild, 'current');
+  }
+
+  // move cursor
+  const nextLetter = document.querySelector('.letter.current');
+  if(nextLetter){
+    cursor.style.top = nextLetter.getBoundingClientRect().top + 2 + 'px';
+    cursor.style.left = nextLetter.getBoundingClientRect().left + 'px';
+    
   }
 })
   
