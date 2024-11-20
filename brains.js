@@ -1,5 +1,7 @@
 const words = 'kinyarwanda officially known as ikinyarwanda is the national language of Rwanda long number word ni ururimi igihugu u Rwanda ni imvugo ururimi Rwanda Burundi ruvugwa no mu bice it is a dialect of the language that is also spoken in adjacent parts of the DRC and in Uganda aho iyo mvugo izwi where the dialect is known as Rufumbira or Urufumbira Kinyarwanda ni rusange mu baturage kavukire Rwanda Kinyarwanda is universal among the native population of Rwanda and kandi yumvikana na Kirundi ururimi igihugu abaturanyi Uburundi kinyabwishya and kinyamulenge are mutually intelligible dialects in the north kivu ni imvugo yumvikana ivugwa mu ntara ya Kivu and South Kivu provinces of neighbouring DRC Amajyaruguru na kivu amajyepfo yo mu bihugu bituranye'.split(' '); //Let's first add/import random words and save the words into a string. and then split each word by a space
 const wordsCount = words.length;
+const gameTime = 30 * 1000;
+window.timer = null;
 
 function addClass(el,name){
   el.className += ' '+name;
@@ -91,6 +93,13 @@ document.getElementById('game').addEventListener('keyup', ev => {
       removeClass(currentWord.lastChild, 'incorrect');
       removeClass(currentWord.lastChild, 'correct');
     }
+  }
+
+  // move lines / words
+  if(currentWord.getBoundingClientRect().top > 250) {
+    const words = document.getElementById('words');
+    const margin = parseInt (words.style.marginTop || '0px');
+    words.style.marginTop = (margin -35) + 'px';
   }
 
   // move cursor
