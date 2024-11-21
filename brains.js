@@ -2,6 +2,7 @@ const words = 'kinyarwanda officially known as ikinyarwanda is the national lang
 const wordsCount = words.length;
 const gameTime = 30 * 1000;
 window.timer = null;
+window.gameStart = null;
 
 function addClass(el,name){
   el.className += ' '+name;
@@ -30,7 +31,30 @@ function newGame() {                                                      //seco
     }
     addClass(document.querySelector('.word'), 'current');
     addClass(document.querySelector('.letter', 'current'));
+    document.getElementById('info').innerHTML = (gameTime / 1000) + '';
+    window.timer = null;
 }
+function getWpm(){
+  const words = [...document.querySelectorAll('.word')];
+  const lastTypedWord = document.querySelector('word.current');
+  const lastTypedWordIndex = words.indexOf(lastTypedWord); 
+  const typedWords = words.slice(0,lastTypedWordIndex);
+  const correctWords = typedWords.filter(word => {
+    const letters = [...word.children];
+    const redLetters = letters.filter(letter => letter.className.includes('inccorrect'));
+    const correctLetters = letters.filter(letter => letter.className.includes('correct'));
+    return incorrectLetters.length === 0 && correctLetters.length === letters.length;
+  });
+  return correctWords.length / gameTime * 60000;
+
+}
+
+function gameOver(){
+  clearInterval(window.timer);
+  addClass(document.getElementById('game'), 'over');
+  document.getElementById('info').innerHTML = `wPM: ${getWpm()}`;
+}
+
 document.getElementById('game').addEventListener('keyup', ev => {
   const key = ev.key;
   const currentWord = document.querySelector('.word.current');
@@ -41,7 +65,30 @@ document.getElementById('game').addEventListener('keyup', ev => {
   const isBackspace = key === 'Backspace';
   const isFirstLetter = currentLetter === currentWord.firstChild;
 
+  if(document.querySelector('#game.over')){
+    return;
+  }
+
   console.log({key,expected});
+
+  if (!window.timer && isLetter){
+    window.timer = setInterval(() => {
+      if(!window.gameStart){
+        window.gameStart = (new Date()).getTime();
+      }
+      const currentTime = (new Date()).getTime();
+      const msPassed = currentTime - window.gameStart;
+      const sPassed = Math.round(msPassed / 1000);
+      const sLeft = (gameTime / 1000) - sPassed;
+      if(sLeft <= 0) {
+        gameOver();
+        return;
+      }
+      document.getElementById('info').innerHTML = msPassed + '';
+
+    }, 1000);
+    alert('start timer');
+  }
 
   if(isLetter){
     if(currentLetter){
@@ -108,6 +155,10 @@ document.getElementById('game').addEventListener('keyup', ev => {
   const cursor = document.getElementById('cursor');
   cursor.style.top = (nextLetter || nextWord).getBoundingClientRect().top + 2 + 'px';
   cursor.style.left =  (nextLetter || nextWord).getBoundingClientRect()[nextLetter ? 'left' : 'right'] + 'px';
-})
+});
+
+document.getElementById('newGameBtn').addEventListener('click'),
+gameOver();
+newGame();
   
     newGame();
